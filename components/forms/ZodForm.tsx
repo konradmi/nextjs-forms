@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { DevTool } from '@hookform/devtools'
 import * as z from 'zod'
 
 import type { SubmitHandler } from 'react-hook-form'
@@ -48,6 +49,7 @@ const ZodForm = <T extends z.ZodType>({ initialValues, onSubmit, children, class
       <form className={className} onSubmit={methods.handleSubmit(onSubmitWithValidation)}>
         { children }
       </form>
+      <DevTool control={methods.control} />
     </FormProvider>
   )
 }
