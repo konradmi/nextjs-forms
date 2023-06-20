@@ -2,7 +2,8 @@
 
 import * as z from 'zod'
 
-import { ZodForm, FormInput, FormSubmitButton, FormCancelButton } from '../../components/forms'
+import { ZodForm, FormInput, FormSubmitButton, FormCancelButton } from '@/components/forms'
+import { nameCreator } from '@/components/forms/ZodForm'
 
 const schema = z.object({
   firstName: z.string().min(3, { message: 'Too short'}).max(20, { message: 'Too long'}),
@@ -31,17 +32,18 @@ const ParseFormatForm = () => {
     return value.startsWith('+48') ? value : `+48 ${value}`
   }
 
+  const getName = nameCreator(schema)
 
   return (
     <ZodForm initialValues={initialValues} onSubmit={handleSubmit} schema={schema}>
       <h1>ParseFormat form</h1>
       <div>
         <label htmlFor='firstName'>First Name</label>
-        <FormInput name='firstName' format={formatFirstName} parse={parseFirstName}/>
+        <FormInput name={getName('firstName')} format={formatFirstName} parse={parseFirstName}/>
       </div>
       <div>
         <label htmlFor='phone'>Phone</label>
-        <FormInput name='phone' format={handlePhone} parse={handlePhone}/>
+        <FormInput name={getName('phone')} format={handlePhone} parse={handlePhone}/>
       </div>
       <FormSubmitButton label='Submit'/>
       <FormCancelButton/>

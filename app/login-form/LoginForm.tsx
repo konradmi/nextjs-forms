@@ -2,7 +2,8 @@
 
 import * as z from 'zod'
 
-import { ZodForm, FormInput, FormSubmitButton, FormCancelButton, FormSubmitError } from '../../components/forms'
+import { ZodForm, FormInput, FormSubmitButton, FormCancelButton, FormSubmitError } from '@/components/forms'
+import { nameCreator } from '@/components/forms/ZodForm'
 
 const schema = z.object({
   username: z.string().min(3, { message: 'Too short'}).max(20, { message: 'Too long'}),
@@ -23,17 +24,18 @@ const LoginForm = () => {
     console.log('values', values)
   }
 
+  const getName = nameCreator(schema)
 
   return (
     <ZodForm initialValues={initialValues} onSubmit={handleSubmit} schema={schema} submitValidation={submitValidation}>
       <h1>Login</h1>
       <div>
         <label htmlFor='username'>Username</label>
-        <FormInput name='username'/>
+        <FormInput name={getName('username')}/>
       </div>
       <div>
         <label htmlFor='password'>Password</label>
-        <FormInput name='password' type='password'/>
+        <FormInput name={getName('password')} type='password'/>
       </div>
       <FormSubmitButton label='Login'/>
       <FormCancelButton/>
