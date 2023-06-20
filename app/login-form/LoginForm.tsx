@@ -16,7 +16,7 @@ const initialValues = {
 
 const LoginForm = () => {
   const submitValidation = async (values: z.infer<typeof schema>) => {
-    return Promise.reject()
+    return Promise.resolve()
   }
 
   const handleSubmit = async (values: z.infer<typeof schema>) => {
