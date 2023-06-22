@@ -10,9 +10,15 @@ type FormInputProps = {
   format?: (value: string) => string
 } & React.ComponentProps<typeof Input>
 
-function FormInput ({ name, type, parse = value => value, format = value => value, ...rest }: FormInputProps) {
+const FormInput = ({ name, type, parse = value => value, format = value => value, ...rest }: FormInputProps) => {
   const { control, formState: { errors } } = useFormContext()
-  
+
+  const getError = () => {
+    return name.split('.').reduce((acc, curr) => {
+      return acc?.[curr]
+    }, (errors || {}) as any)
+  }
+
   return (
     <div>
       <Controller
@@ -22,14 +28,14 @@ function FormInput ({ name, type, parse = value => value, format = value => valu
           <Input
             {...rest}
             type={type}
-            error={!!errors[name]}
+            error={!!getError()}
             value={format(field.value)}
             onChange={e => field.onChange(parse(e.target.value))}
             onBlur={field.onBlur}
           />
         )}
       />
-      { errors[name] && <div style={{ color: 'red' }}>{ errors[name]?.message as string }</div> }
+      { getError() && <div style={{ color: 'red' }}>{ getError()?.message as string }</div> }
     </div>
   )
 }
