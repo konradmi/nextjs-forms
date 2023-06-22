@@ -23,7 +23,6 @@ const FormArray = ({ name, row: Row }: FormArrayProps) => {
     control,
     name,
   })
-  console.log(fields)
 
   const setName = (index: number) => (rowName: string) => `${name}.${index}.${rowName}`
 
