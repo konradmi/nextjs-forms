@@ -8,9 +8,9 @@ type FormInputProps = {
   type?: string
   parse?: (value: string) => string
   format?: (value: string) => string
-}
+} & React.ComponentProps<typeof Input>
 
-function FormInput ({ name, type, parse = value => value, format = value => value }: FormInputProps) {
+function FormInput ({ name, type, parse = value => value, format = value => value, ...rest }: FormInputProps) {
   const { control, formState: { errors } } = useFormContext()
   
   return (
@@ -20,6 +20,7 @@ function FormInput ({ name, type, parse = value => value, format = value => valu
         name={name}
         render={({ field }) => (
           <Input
+            {...rest}
             type={type}
             error={!!errors[name]}
             value={format(field.value)}

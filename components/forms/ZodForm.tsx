@@ -15,9 +15,18 @@ type FormProps<T extends z.ZodType> = {
   children: React.ReactNode
   className?: string
   schema: T
+  fallback?: React.ReactNode
 }
 
-const ZodForm = <T extends z.ZodType>({ initialValues, onSubmit, children, className, schema, submitValidation = () => Promise.resolve() }: FormProps<T>) => {
+const ZodForm = <T extends z.ZodType>({ 
+  initialValues, 
+  onSubmit, 
+  children, 
+  className, 
+  schema, 
+  submitValidation = () => Promise.resolve() ,
+  fallback,
+}: FormProps<T>) => {
   const methods = useForm<z.infer<T>>({
     mode: 'onBlur',
     defaultValues: initialValues,
@@ -44,10 +53,11 @@ const ZodForm = <T extends z.ZodType>({ initialValues, onSubmit, children, class
     }
   }
   
+  const { isSubmitting } = methods.formState
   return (
     <FormProvider {...methods}>
       <form className={className} onSubmit={methods.handleSubmit(onSubmitWithValidation)}>
-        { children }
+        { (fallback && isSubmitting) ? fallback : children }
       </form>
       <DevTool control={methods.control} />
     </FormProvider>
