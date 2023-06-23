@@ -9,6 +9,7 @@ export type RowProps = {
   setName: (rowName: string) => string
   appendNewRow: (row: object) => void
   removeCurrentRow: () => void
+  isLastRow: boolean
 }
 
 type FormArrayProps = {
@@ -29,11 +30,7 @@ const FormArray = ({ name, row: Row }: FormArrayProps) => {
 
   const setName = (index: number) => (rowName: string) => `${name}.${index}.${rowName}`
 
-  return (
-    <>
-      { fields.map((field, index) => <Row key={field.id} setName={setName(index)} removeCurrentRow={removeRow(index)} appendNewRow={appendNewRow}/>)}
-    </>
-  )
+  return fields.map((field, index) => <Row key={field.id} setName={setName(index)} removeCurrentRow={removeRow(index)} appendNewRow={appendNewRow} isLastRow={fields.length - 1 === index}/>)
 }
 
 export default FormArray
