@@ -1,15 +1,14 @@
+import { useEffect } from 'react'
+
 import { 
   useFormContext, 
   useFieldArray, 
-  UseFieldArrayAppend, 
-  UseFieldArrayRemove, 
-  FieldValues 
 } from 'react-hook-form'
 
 export type RowProps = {
   setName: (rowName: string) => string
-  append: UseFieldArrayAppend<FieldValues>
-  remove: UseFieldArrayRemove
+  appendNewRow: (row: object) => void
+  removeCurrentRow: () => void
 }
 
 type FormArrayProps = {
@@ -21,15 +20,20 @@ const FormArray = ({ name, row: Row }: FormArrayProps) => {
   const { control } = useFormContext()
   const { fields, append, remove } = useFieldArray({
     control,
-    name,
+    name
   })
+
+  const removeRow = (index: number) => () => remove(index)
+
+  const appendNewRow = (row: object) => append(row)
 
   const setName = (index: number) => (rowName: string) => `${name}.${index}.${rowName}`
 
-  return fields.map((field, index) => (
-    <Row key={field.id} setName={setName(index)} remove={remove} append={append}/>
-  ))
-  
+  return (
+    <>
+      { fields.map((field, index) => <Row key={field.id} setName={setName(index)} removeCurrentRow={removeRow(index)} appendNewRow={appendNewRow}/>)}
+    </>
+  )
 }
 
 export default FormArray

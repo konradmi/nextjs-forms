@@ -16,15 +16,17 @@ const schema = z.object({
 const initialValues = {
   firstName: '',
   interests: [{
-    name: 'football'
+    name: '',
   }],
 }
 
-const Row = ({ setName, append, remove }: RowProps) => {
+const Row = ({ setName, appendNewRow, removeCurrentRow }: RowProps) => {
   return (
-    <div>
+    <div style={{border: '1px solid black', marginBottom: 10}}>
       <label htmlFor='name'>Interest</label>
       <FormInput name={setName('name')}/>
+      <button type='button' onClick={() => appendNewRow({ name: ''})}>+</button>
+      <button type='button' onClick={removeCurrentRow}>-</button>
     </div>
   )
 }
