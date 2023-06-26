@@ -1,12 +1,23 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, createContext } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DevTool } from '@hookform/devtools'
 import * as z from 'zod'
 
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm, FormProvider } from 'react-hook-form'
+
+type FormItemLayout = {
+  labelCol: {
+    xs: { span: number }
+    sm: { span: number }
+  },
+  wrapperCol: {
+    xs: { span: number }
+    sm: { span: number }
+  }
+}
 
 type FormProps<T extends z.ZodType> = {
   initialValues: z.infer<T>
@@ -16,7 +27,11 @@ type FormProps<T extends z.ZodType> = {
   className?: string
   schema: T
   fallback?: React.ReactNode
+  formItemLayout?: FormItemLayout
+
 }
+
+export const FormItemLayoutContext = createContext<FormItemLayout | undefined>(undefined)
 
 const ZodForm = <T extends z.ZodType>({ 
   initialValues, 
@@ -26,6 +41,7 @@ const ZodForm = <T extends z.ZodType>({
   schema, 
   submitValidation = () => Promise.resolve() ,
   fallback,
+  formItemLayout,
 }: FormProps<T>) => {
   const methods = useForm<z.infer<T>>({
     mode: 'onBlur',
@@ -56,10 +72,12 @@ const ZodForm = <T extends z.ZodType>({
   const { isSubmitting } = methods.formState
   return (
     <FormProvider {...methods}>
+      <FormItemLayoutContext.Provider value={formItemLayout}>
       <form className={className} onSubmit={methods.handleSubmit(onSubmitWithValidation)}>
         { (fallback && isSubmitting) ? fallback : children }
       </form>
       <DevTool control={methods.control} />
+      </FormItemLayoutContext.Provider>
     </FormProvider>
   )
 }

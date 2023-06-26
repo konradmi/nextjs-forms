@@ -1,7 +1,10 @@
 'use client'
 
+import { useContext } from 'react'
 import { useFormContext, Controller } from 'react-hook-form'
 import Input from '@mui/material/Input'
+
+import { FormItemLayoutContext } from './ZodForm'
 
 type FormInputProps = {
   name: string
@@ -12,6 +15,8 @@ type FormInputProps = {
 
 const FormInput = ({ name, type, parse = value => value, format = value => value, ...rest }: FormInputProps) => {
   const { control, formState: { errors } } = useFormContext()
+  const formItemLayout = useContext(FormItemLayoutContext)
+  console.log(formItemLayout)
 
   const getError = () => {
     return name.split('.').reduce((acc, curr) => {
