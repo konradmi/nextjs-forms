@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React from 'react'
 
 import { 
   useFormContext, 
@@ -12,12 +12,15 @@ export type RowProps = {
   isLastRow: boolean
 }
 
+export type InitialRowProps = Pick<RowProps, 'appendNewRow'>
+
 type FormArrayProps = {
   name: string
   row: (props: RowProps) => JSX.Element
+  initialRow?: (props: InitialRowProps) => JSX.Element
 }
 
-const FormArray = ({ name, row: Row }: FormArrayProps) => {
+const FormArray = ({ name, row: Row, initialRow: InitialRow }: FormArrayProps) => {
   const { control } = useFormContext()
   const { fields, append, remove } = useFieldArray({
     control,
@@ -30,7 +33,12 @@ const FormArray = ({ name, row: Row }: FormArrayProps) => {
 
   const setName = (index: number) => (rowName: string) => `${name}.${index}.${rowName}`
 
-  return fields.map((field, index) => <Row key={field.id} setName={setName(index)} removeCurrentRow={removeRow(index)} appendNewRow={appendNewRow} isLastRow={fields.length - 1 === index}/>)
+  return (
+    <>
+      { InitialRow && <InitialRow appendNewRow={appendNewRow}/> }
+      { fields.map((field, index) => <Row key={field.id} setName={setName(index)} removeCurrentRow={removeRow(index)} appendNewRow={appendNewRow} isLastRow={fields.length - 1 === index}/>) }
+    </>
+  )
 }
 
 export default FormArray
