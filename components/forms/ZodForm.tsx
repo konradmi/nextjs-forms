@@ -3,12 +3,13 @@
 import React, { useEffect, createContext } from 'react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DevTool } from '@hookform/devtools'
+import Grid from '@mui/material/Grid'
 import * as z from 'zod'
 
 import type { SubmitHandler } from 'react-hook-form'
 import { useForm, FormProvider } from 'react-hook-form'
 
-type FormItemLayout = {
+export type FormItemLayout = {
   labelCol: {
     xs: { span: number }
     sm: { span: number }
@@ -70,11 +71,18 @@ const ZodForm = <T extends z.ZodType>({
   }
   
   const { isSubmitting } = methods.formState
+
   return (
     <FormProvider {...methods}>
       <FormItemLayoutContext.Provider value={formItemLayout}>
       <form className={className} onSubmit={methods.handleSubmit(onSubmitWithValidation)}>
-        { (fallback && isSubmitting) ? fallback : children }
+        { 
+          (fallback && isSubmitting) 
+            ? fallback 
+            : formItemLayout
+              ? <Grid container direction='column'>{children}</Grid>
+              : children
+        }
       </form>
       <DevTool control={methods.control} />
       </FormItemLayoutContext.Provider>
