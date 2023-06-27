@@ -18,11 +18,11 @@ const initialValues = {
 const formItemLayout = {
   labelCol: {
     xs: { span: 1 },
-    sm: { span: 3 },
+    sm: { span: 4 },
   },
   wrapperCol: {
     xs: { span: 2 },
-    sm: { span: 6 },
+    sm: { span: 8 },
   },
 }
 
@@ -41,8 +41,8 @@ const FormLayout = () => {
     <>
       <h1>Form with layout</h1>
       <ZodForm initialValues={initialValues} onSubmit={handleSubmit} schema={schema} submitValidation={submitValidation} formItemLayout={formItemLayout}>
-        <FormInput name={getName('username')} label='Username' layoutSize='xs'/>
-        <FormInput name={getName('password')} type='password' label='Password' layoutSize='xs'/>
+        <FormInput name={getName('username')} label='Username' layoutSize='sm'/>
+        <FormInput name={getName('password')} type='password' label='Password' layoutSize='sm'/>
         <div>
           <FormSubmitButton label='Login'/>
           <FormCancelButton/>

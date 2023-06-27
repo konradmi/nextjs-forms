@@ -37,7 +37,7 @@ const FormInput = ({ name, label, layoutSize, type, parse = value => value, form
           <>
             { formItemLayout && layoutSize
                 ? (
-                  <>
+                  <Grid container direction='row'>
                     <Grid item xs={formItemLayout.labelCol[layoutSize].span}>
                       {label}
                     </Grid>
@@ -51,7 +51,7 @@ const FormInput = ({ name, label, layoutSize, type, parse = value => value, form
                         onBlur={field.onBlur}
                       />
                     </Grid>
-                  </>
+                  </Grid>
                 ) : (
                   <>
                     { label && <label htmlFor={name}>{label}</label> }
