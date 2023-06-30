@@ -1,12 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import * as z from 'zod'
-import Input from '@mui/material/Input'
 
 import { ZodForm, FormInput, FormSubmitButton, FormCancelButton, FormArray } from '@/components/forms'
-import type { RowProps, InitialRowProps } from '@/components/forms/FormArray'
+import type { RowProps } from '@/components/forms/FormArray'
 import { nameCreator } from '@/components/forms/ZodForm'
+import { UseFieldArrayAppend, FieldValues } from 'react-hook-form'
 
 const schema = z.object({
   firstName: z.string().min(3, { message: 'Too short'}).max(20, { message: 'Too long'}),
@@ -15,14 +14,7 @@ const schema = z.object({
   }))
 })
 
-const initialValuesNoInitialRow = {
-  firstName: '',
-  interests: [{
-    name: '',
-  }],
-}
-
-const initialValuesWithInitialRow = {
+const initialValues = {
   firstName: '',
   interests: [],
 }
@@ -39,23 +31,12 @@ const Row = ({ setName, appendNewRow, removeCurrentRow, isLastRow }: RowProps) =
   )
 }
 
-const InitialRow = ({ appendNewRow }: InitialRowProps) => {
-  const [name, setName] = useState('')
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setName(e.target.value)
-  }
-
-  const handleClick = () => {
-    appendNewRow({ name })
-    setName('')
-  }
+const AddRow = ({ append }: { append: UseFieldArrayAppend<FieldValues>}) => {
+  const handleClick = () => append({ name: '' })
 
   return (
     <div style={{border: '1px solid black', marginBottom: 10}}>
-      <label htmlFor='name'>Interest</label>
-      <Input onChange={handleChange} value={name}/>
-      <button type='button' onClick={handleClick}>+</button>
+      <button type='button' onClick={handleClick}>Add</button>
     </div>
   )
 }
@@ -69,27 +50,26 @@ const FormWithArray = () => {
 
   return (
     <>
-      <h1>Form without initial row</h1>
-      <ZodForm initialValues={initialValuesNoInitialRow} onSubmit={handleSubmit} schema={schema}>
+    <h1>Form</h1>
+      <ZodForm initialValues={initialValues} onSubmit={handleSubmit} schema={schema}>
       <div>
         <label htmlFor='firstName'>First Name</label>
         <FormInput name={getName('firstName')}/>
       </div>
       <h3>Interests: </h3>
-      <FormArray name={getName('interests')} row={Row}/>
-
-      <FormSubmitButton label='Submit'/>
-      <FormCancelButton/>
-    </ZodForm>
-    <br/>
-    <h1>Form with initial row</h1>
-      <ZodForm initialValues={initialValuesWithInitialRow} onSubmit={handleSubmit} schema={schema}>
-      <div>
-        <label htmlFor='firstName'>First Name</label>
-        <FormInput name={getName('firstName')}/>
-      </div>
-      <h3>Interests: </h3>
-      <FormArray name={getName('interests')} row={Row} initialRow={InitialRow}/>
+      <FormArray name={getName('interests')} row={Row}>
+        {
+          (append, _, rows) => {
+            return (
+              <>
+                <AddRow append={append}/>
+                <div>Rows:</div>
+                {rows}
+              </>
+            )
+          }
+        }
+      </FormArray>
 
       <FormSubmitButton label='Submit'/>
       <FormCancelButton/>

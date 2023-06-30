@@ -1,8 +1,11 @@
 import React from 'react'
 
 import { 
-  useFormContext, 
-  useFieldArray, 
+  useFormContext,
+  useFieldArray,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove, 
+  FieldValues,
 } from 'react-hook-form'
 
 export type RowProps = {
@@ -12,15 +15,13 @@ export type RowProps = {
   isLastRow: boolean
 }
 
-export type InitialRowProps = Pick<RowProps, 'appendNewRow'>
-
 type FormArrayProps = {
   name: string
   row: (props: RowProps) => JSX.Element
-  initialRow?: (props: InitialRowProps) => JSX.Element
+  children: (append: UseFieldArrayAppend<FieldValues>, remove: UseFieldArrayRemove, rows: JSX.Element[]) => JSX.Element
 }
 
-const FormArray = ({ name, row: Row, initialRow: InitialRow }: FormArrayProps) => {
+const FormArray = ({ name, row: Row, children  }: FormArrayProps) => {
   const { control } = useFormContext()
   const { fields, append, remove } = useFieldArray({
     control,
@@ -33,10 +34,11 @@ const FormArray = ({ name, row: Row, initialRow: InitialRow }: FormArrayProps) =
 
   const setName = (index: number) => (rowName: string) => `${name}.${index}.${rowName}`
 
+  const rows = fields.map((field, index) => <Row key={field.id} setName={setName(index)} removeCurrentRow={removeRow(index)} appendNewRow={appendNewRow} isLastRow={fields.length - 1 === index}/>)
+
   return (
     <>
-      { InitialRow && <InitialRow appendNewRow={appendNewRow}/> }
-      { fields.map((field, index) => <Row key={field.id} setName={setName(index)} removeCurrentRow={removeRow(index)} appendNewRow={appendNewRow} isLastRow={fields.length - 1 === index}/>) }
+      { children(append, remove, rows) }
     </>
   )
 }
