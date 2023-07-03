@@ -90,6 +90,7 @@ const ZodForm = <T extends z.ZodType>({
   )
 }
 
+// todo: https://gist.github.com/steven-schmoll-at/5b4a886456c7cd9a854bb61f4a2a004a
 export const nameCreator = <T extends z.ZodType>(schema: T) => (name: keyof z.infer<T>): string => name as string
 
 export default ZodForm
